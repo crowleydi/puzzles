@@ -88,16 +88,21 @@ def getcount():
         s = s + len(b)
     return s
 
+def printboard():
+    for r in range(board_size):
+        print(row(r))
+
 def solve(lh,rh,to,bo):
     solved=False
     last=0
     loops=0
     cur = getcount()
     while not solved and last != cur:
-        #print("cur size=" + str(cur))
         last = cur
         runboard(lh,rh,to,bo)
         loops = loops+1
+        print('after loop ' + str(loops))
+        printboard()
         cur = getcount()
         solved = (cur == board_size*board_size)
     return solved,loops
@@ -106,25 +111,42 @@ def setpiece(r,c,v):
     global board,board_size
     board[(r-1)*board_size+(c-1)]={v}
 
-
+if __name__ == '__main__':
 # create board size 6x6
-initBoard(6)
+    initBoard(6)
 
 #init some pieces
-setpiece(1,3,2)
-setpiece(4,2,2)
+#setpiece(1,4,2)
+#setpiece(5,6,3)
+#setpiece(6,1,4)
+#lh=[0,2,2,0,1,3]
+#rh=[3,0,3,3,3,0]
+#to=[0,0,3,2,0,0]
+#bo=[0,3,2,2,0,0]
 
-#set constraints
-lh=[0,4,0,4,0,0]
-rh=[4,2,3,0,4,0]
-to=[0,2,0,2,0,0]
-bo=[3,1,0,3,0,0]
+#setpiece(6,3,2)
+#lh=[0,4,3,0,0,0]
+#rh=[2,1,0,0,2,3]
+#to=[3,4,0,4,2,0]
+#bo=[0,3,4,0,0,0]
 
-#solve
-solved,loops=solve(lh,rh,to,bo)
+#setpiece(5,5,3)
+#setpiece(6,3,4)
+#setpiece(6,6,2)
+#lh=[0,0,0,4,0,0]
+#rh=[0,0,3,0,3,0]
+#to=[0,2,3,2,0,3]
+#bo=[3,0,0,3,1,2]
 
-# print the board
-print("stopped after " + str(loops) + " loops")
-print("not solved :(") if not solved else print("solved!")
-for r in range(board_size):
-    print(row(r))
+    setpiece(2,3,2)
+    setpiece(3,6,4)
+    setpiece(5,4,1)
+    setpiece(6,1,1)
+    lh=[0,3,0,2,2,0]
+    rh=[4,0,0,0,0,0]
+    to=[0,1,0,3,0,0]
+    bo=[0,2,0,0,4,1]
+
+    solved,loops=solve(lh,rh,to,bo)
+    print("stopped after " + str(loops) + " loops")
+    print("not solved :(") if not solved else print("solved!")
