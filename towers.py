@@ -82,6 +82,43 @@ def runboard(lh,rh,to,bo):
         ret=runset(to[c],col(c),bo[c])
         setcol(c,ret)
 
+def trim(n,r):
+    if n < 0:
+        raise ValueError("can't trim a negative value")
+    if n == 1:
+        r[0].clear()
+        r[0].add(board_size)
+        for i in range(1,board_size):
+            r[i].discard(board_size)
+    elif n == 2:
+        r[0].discard(board_size)
+        r[1].discard(board_size-1)
+    elif n == board_size: 
+        for i in range(1,board_size+1):
+            r[i-1].clear()
+            r[i-1].add(i)
+    elif n < board_size:
+        # if n == 3 and boardsize == 6
+        # then we need r[0].discard(5,6), r[1].discard(6)
+        # if n == 4 and boardsize == 6
+        # then we need r[0].discard(4,5,6), r[1].discard(5,6), r[2].discard(6)
+        for i in range(n-1):
+            for ii in range(board_size-n+i+2,board_size+1):
+                r[i].discard(ii)
+    return r
+
+def trim_board(lh,rh,to,bo):
+    for i in range(board_size):
+        r=row(i)
+        trim(lh[i],r)
+        r.reverse()
+        trim(rh[i],r)
+
+        c=col(i)
+        trim(to[i],c)
+        c.reverse()
+        trim(bo[i],c)
+
 def getcount():
     s=0
     for b in board:
@@ -97,6 +134,7 @@ def solve(lh,rh,to,bo):
     last=0
     loops=0
     cur = getcount()
+    #trim_board(lh,rh,to,bo)
     while not solved and last != cur:
         last = cur
         runboard(lh,rh,to,bo)
@@ -130,22 +168,24 @@ if __name__ == '__main__':
 #to=[3,4,0,4,2,0]
 #bo=[0,3,4,0,0,0]
 
-#setpiece(5,5,3)
-#setpiece(6,3,4)
-#setpiece(6,6,2)
-#lh=[0,0,0,4,0,0]
-#rh=[0,0,3,0,3,0]
-#to=[0,2,3,2,0,3]
-#bo=[3,0,0,3,1,2]
+    setpiece(5,5,3)
+    setpiece(6,3,4)
+    setpiece(6,6,2)
+    lh=[0,0,0,4,0,0]
+    rh=[0,0,3,0,3,0]
+    to=[0,2,3,2,0,3]
+    bo=[3,0,0,3,1,2]
 
-    setpiece(2,3,2)
-    setpiece(3,6,4)
-    setpiece(5,4,1)
-    setpiece(6,1,1)
-    lh=[0,3,0,2,2,0]
-    rh=[4,0,0,0,0,0]
-    to=[0,1,0,3,0,0]
-    bo=[0,2,0,0,4,1]
+    #setpiece(3,4,1)
+    #setpiece(6,6,3)
+    #setpiece(2,5,4)
+    #setpiece(6,3,4)
+    #setpiece(4,3,5)
+    #setpiece(4,4,4)
+    #lh=[2,3,0,0,2,1]
+    #rh=[0,0,2,5,0,0]
+    #to=[3,0,0,0,0,0]
+    #bo=[0,0,3,0,2,3]
 
     solved,loops=solve(lh,rh,to,bo)
     print("stopped after " + str(loops) + " loops")
